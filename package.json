@@ -2,6 +2,8 @@
   "name": "my-dashboard",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://script.google.com",
+
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
