@@ -17,13 +17,18 @@ export default function App() {
   const [showModal, setShowModal] = useState(false);
   const [reviews, setReviews] = useState([]);
 
+  // ---------------- FETCH DATA ----------------
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
+        setError('');
 
         const res = await fetch(API_URL, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             accessToken: 'secret-token',
             type: type,
@@ -37,11 +42,13 @@ export default function App() {
           setProducts([]);
           setSummary(null);
         } else {
-          setProducts(data.products);
-          setSummary(data.summary);
+          setProducts(data.products || []);
+          setSummary(data.summary || null);
         }
       } catch (err) {
         setError('Error fetching data');
+        setProducts([]);
+        setSummary(null);
       } finally {
         setLoading(false);
       }
@@ -50,7 +57,8 @@ export default function App() {
     fetchData();
   }, [type]);
 
-  const filteredProducts = products.filter((p) =>
+  // ---------------- SEARCH FILTER ----------------
+  const filteredProducts = (products || []).filter((p) =>
     p.title.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -58,8 +66,9 @@ export default function App() {
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
       <h2>Dashboard</h2>
 
-      {/* Buttons for switching */}
+      {/* Buttons */}
       <button onClick={() => setType('pricing')}>Pricing Analytics</button>
+
       <button onClick={() => setType('reviews')} style={{ marginLeft: '10px' }}>
         Review Sentiment
       </button>
@@ -70,7 +79,7 @@ export default function App() {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Summary Cards */}
+      {/* Summary */}
       {!loading && summary && (
         <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
           {type === 'pricing' && (
@@ -125,7 +134,7 @@ export default function App() {
       <br />
       <br />
 
-      {/* Table */}
+      {/* TABLE */}
       {!loading && filteredProducts.length === 0 ? (
         <p>No products found</p>
       ) : (
@@ -184,7 +193,7 @@ export default function App() {
                     <td>
                       <button
                         onClick={() => {
-                          setReviews(p.reviews);
+                          setReviews(p.reviews || []);
                           setShowModal(true);
                         }}
                       >
@@ -199,15 +208,25 @@ export default function App() {
         </table>
       )}
 
-      {/* Simple Modal */}
+      {/* MODAL */}
       {showModal && (
         <div style={modalStyle}>
           <div style={modalBoxStyle}>
             <h3>Reviews</h3>
 
-            {reviews.map((r, i) => (
-              <p key={i}>• {r}</p>
-            ))}
+            {reviews.length === 0 ? (
+              <p>No reviews available</p>
+            ) : (
+              reviews.map((r, i) => (
+                <div key={i} style={{ marginBottom: '12px' }}>
+                  <p> Rating: {r.rating}</p>
+                  <p> Comment: {r.comment}</p>
+                  <p> By: {r.reviewerName}</p>
+                  <p> {r.reviewerEmail}</p>
+                  <hr />
+                </div>
+              ))
+            )}
 
             <button onClick={() => setShowModal(false)}>Close</button>
           </div>
@@ -217,6 +236,7 @@ export default function App() {
   );
 }
 
+// ------- STYLES ----
 const cardStyle = {
   border: '1px solid gray',
   padding: '10px',
