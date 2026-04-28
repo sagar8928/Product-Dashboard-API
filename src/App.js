@@ -26,10 +26,9 @@ export default function App() {
 
         const res = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          // },
           body: JSON.stringify({
             accessToken: 'secret-token',
             type: type,
