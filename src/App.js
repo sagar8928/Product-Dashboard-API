@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const API_URL =
-  '/macros/s/AKfycbzrLBcj7VKEjF5yGHJT22C8SNtg_q3mJV1bH1adxomCswKpfu4aEeLxgaBedFANVVhl/exec';
+  'https://script.google.com/macros/s/AKfycbzrLBcj7VKEjF5yGHJT22C8SNtg_q3mJV1bH1adxomCswKpfu4aEeLxgaBedFANVVhl/exec';
 
 export default function App() {
   const [type, setType] = useState('pricing');
@@ -28,6 +28,7 @@ export default function App() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
           body: JSON.stringify({
             accessToken: 'secret-token',
